@@ -12,13 +12,40 @@ class Connect4
   end
 
   def play
-    puts "Welcome to Connect 4!"
+    puts "Welcome to Connect 4!\n\nThis game has two players.\nLet's start by getting the player names.\n\n"
     get_player_names
     while true
       game_play
       break unless play_again?
       @board.clear_board
     end
+  end
+
+  def get_player_names
+    print "Enter name for first player: "
+    p1_name = gets.chomp
+    puts
+    p2_name = names_unique?(p1_name)
+    initialize_players(p1_name, p2_name)
+  end
+
+  def names_unique?(p1_name)
+    print "Enter name for second player: "
+    p2_name = gets.chomp
+    puts
+    while p1_name.downcase == p2_name.downcase
+      print "Second player, please enter a different name than the first player: "
+      p2_name = gets.chomp
+      puts
+    end
+    p2_name
+  end
+
+  def initialize_players(p1_name, p2_name)
+    @p1 = Player.new(p1_name, "X")
+    @p2 = Player.new(p2_name, "O")
+    @current_player = p1
+    @opponent = p2
   end
 
   def game_play
@@ -33,6 +60,16 @@ class Connect4
       break if board_full?
       break if player_plays_chip
     end
+  end
+
+  def board_full?
+    flag = false
+    if @board.grid_full?
+      @board.print_grid
+      print_legend
+      flag = true
+    end
+    flag
   end
 
   def player_plays_chip
@@ -50,25 +87,38 @@ class Connect4
     end
   end
 
+  def prompt_player_choice
+    print "#{current_player.name}, please enter a column (0-9) to drop your chip in: "
+    choice = gets.chomp.downcase
+    puts
+    while choice.to_i > 9 || choice.to_i < 0 || !(/[a-z][a-z]*/ =~ choice).nil?
+      print "Column does not exist, choose again: "
+      choice = gets.chomp.downcase
+      puts
+    end
+    choice.to_i
+  end
+
   def winner?(row, column)
     flag = false
     if @board.winner?(row , column, opponent)
       @board.print_grid
       print_legend
-      puts "#{current_player.name} has won!\n\n"
+      puts "#{current_player.name} wins!\n\n"
       flag = true
     end
     flag
   end
 
-  def board_full?
-    flag = false
-    if @board.grid_full?
-      @board.print_grid
-      print_legend
-      flag = true
+  def switch_players
+    @player_counter += 1
+    if @player_counter%2 == 0
+      @current_player = p1
+      @opponent = p2
+    else
+      @current_player = p2
+      @opponent = p1
     end
-    flag
   end
 
   def play_again?
@@ -83,51 +133,6 @@ class Connect4
         puts "Invalid input."
       end
     end
-  end
-
-  def get_player_names
-    print "Player 1, enter name: "
-    p1_name = gets.chomp
-    puts
-    print "Player 2, enter name: "
-    p2_name = gets.chomp
-    puts
-    while p1_name.downcase == p2_name.downcase
-      print "Player 2, please enter unique name: "
-      p2_name = gets.chomp
-      puts
-    end
-    initialize_players(p1_name, p2_name)
-  end
-
-  def initialize_players(p1_name, p2_name)
-    @p1 = Player.new(p1_name, "X")
-    @p2 = Player.new(p2_name, "O")
-    @current_player = p1
-    @opponent = p2
-  end
-
-  def switch_players
-    @player_counter += 1
-    if @player_counter%2 == 0
-      @current_player = p1
-      @opponent = p2
-    else
-      @current_player = p2
-      @opponent = p1
-    end
-  end
-
-  def prompt_player_choice
-    print "#{current_player.name} please select a column to drop chip in: "
-    choice = gets.chomp.downcase
-    puts
-    while choice.to_i > 9 || choice.to_i < 0 || !(/[a-z][a-z]*/ =~ choice).nil?
-      print "Column does not exist, choose again: "
-      choice = gets.chomp.downcase
-      puts
-    end
-    choice.to_i
   end
 
   def print_legend

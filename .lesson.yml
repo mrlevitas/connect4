@@ -1,0 +1,6 @@
+---
+title: "Connect 4 Challenge"
+type: "challenge"
+description: "Create a command line version of Connect 4"
+visibility: "assign"
+tags: "oop"

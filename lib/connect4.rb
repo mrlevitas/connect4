@@ -12,7 +12,7 @@ class Connect4
   end
 
   def play
-    puts "Welcome to Connect 4!\n\nThis game has two players.\nLet's start by getting the player names.\n\n"
+    puts "\nWelcome to Connect 4!\n\nThis game has two players.\nLet's start by getting the player names.\n\n"
     get_player_names
     while true
       game_play
